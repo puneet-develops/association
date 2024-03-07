@@ -43,6 +43,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false,
     },
+    password: {
+      type:DataTypes.STRING,}
   }, {
     sequelize,
     modelName: 'User',

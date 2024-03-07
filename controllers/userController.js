@@ -5,7 +5,9 @@ const { User, Order, Wishlist, Review } = require('../models');
 const UserController = {
   async getUsers(req, res) {
     try {
-      const users = await User.findAll();
+      const users = await User.findAll({
+        attributes:['username','email','registration_date'],
+      });
       res.json(users);
     } catch (error) {
       console.error(error);
