@@ -2,65 +2,71 @@ const db=require('../models/index');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const registerUser=async(req,res)=>{
-    try{
-        const {username,email,password}=req.body;
-        console.log(username);
-        //check if the email exists in the db
-        const userExists=await db.User.findeOne({
-
-            where:{email}
-        })
-        console.log("here");
-        if(userExists){
-            return res.status(400).send('Email is already is associated with someone ')
+const AuthController = {
+    async registerUser(req, res) {
+      try {
+        const { username, email, password } = req.body;
+  
+        // Check if the user already exists
+        const existingUser = await db.User.findOne({ where: { email } });
+        if (existingUser) {
+          return res.status(400).json({ error: 'User already exists' });
         }
-        console.log("here --1");
-
-        await db.Users.create({
-            username,email,password:await bcrypt.hash(password,10)
-        });
-        console.log("here --2");
-
-        return res.status(200).send('Registration successful');
-    }catch(err){
-        return res.status(500).send('Error in registering user');
-    }
-};
-
-const signInUser=async(req,res)=>{
-    try{
-        const {email ,password}=req.body;
-        const user=await db.Users.findeOne({
-            where: {email}
-        });
-
-        if(!user){
-            return res.status(404).json('Email not found');
+  
+        // Hash the password
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+  
+        // Create a new user
+        const newUser = await db.User.create({ username, email, password: hashedPassword });
+  
+        // Create and sign a JWT token
+        const token = jwt.sign(
+          { user: { userId: newUser.user_id, username: newUser.username, roles: newUser.role } },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: '1h', // Token expiration time
+          }
+        );
+  
+        res.json({ token });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    },
+  
+    async signInUser(req, res) {
+      try {
+        const { email, password } = req.body;
+  
+        // Check if the user exists
+        const user = await db.User.findOne({ where: { email } });
+        if (!user) {
+          return res.status(401).json({ error: 'Invalid credentials' });
         }
-
-        //verify password
-        const passwordvalid=await bcrypt.compare(password,user.password);
-        if(!passwordvalid){
-            return res.status(404).json('Incorrect email and password combination');
+  
+        // Verify the password
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+          return res.status(401).json({ error: 'Invalid credentials' });
         }
-        // ab bhejenge authentiaction token
-        const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, {
-          expiresIn: process.env.JWT_REFRESH_EXPIRATION,
-        });
-        res.status(200).send({
-            id: user.user_id,
-            name: user.username,
-            email: user.email,
-            accessToken: token,
-        });
-
-    }catch(err){
-        return res.status(500).send('Sign in error');
-    }
-}
-
-module.exports={
-    registerUser,
-    signInUser
-}
+  
+        // Create and sign a JWT token
+        const token = jwt.sign(
+          { user: { userId: user.user_id, username: user.username, roles: user.role } },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: '1h', // Token expiration time
+          }
+        );
+  
+        res.json({ token });    
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    },
+  };
+  
+  module.exports = AuthController;

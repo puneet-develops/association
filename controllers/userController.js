@@ -6,7 +6,7 @@ const UserController = {
   async getUsers(req, res) {
     try {
       const users = await User.findAll({
-        attributes:['username','email','registration_date'],
+        attributes:['username','email',],
       });
       res.json(users);
     } catch (error) {

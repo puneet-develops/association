@@ -39,12 +39,14 @@ module.exports = (sequelize, DataTypes) => {
         isEmail: true,
       },
     },
-    registration_date: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
     password: {
-      type:DataTypes.STRING,}
+      type:DataTypes.STRING,
+      allowNull:false,
+    },
+    role:{
+      type:DataTypes.STRING,
+      defaultValue:'user'
+    }
   }, {
     sequelize,
     modelName: 'User',

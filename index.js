@@ -18,16 +18,25 @@ const wishlistRoutes = require('./routes/wishlistRoutes');
 const orderItemRoutes = require('./routes/orderItemRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const authRoutes=require('./routes/authRoutes');
+const verifytoken=require('./middleware/authMiddleware');
+const authorize=require('./middleware/authorizeMiddleware');  
+const index=require("./routes/index")
 
 
+//-------------------authentication routes
+app.use('/api',index);
 //-----------------------------------routes only---
-app.use('/api', userRoutes);
-app.use('/api', productRoutes);
-app.use('/api', orderRoutes);
-app.use('/api', wishlistRoutes);
-app.use('/api', orderItemRoutes);
-app.use('/api', reviewRoutes);
-app.use('/api', authRoutes);
+// app.use('api/auth',authRoutes);
+// //-----------------------------------routes only---
+// app.use('/api', verifytoken,userRoutes);
+// app.use('/api', verifytoken,productRoutes);
+// app.use('/api', verifytoken,orderRoutes);
+// app.use('/api', verifytoken, wishlistRoutes);
+// app.use('/api', verifytoken,orderItemRoutes);
+// app.use('/api', verifytoken,reviewRoutes);
+//pp.use('/api', verifytoken,authRoutes);
+
+
 
 
 // Start the server

@@ -1,10 +1,10 @@
-// routes/orderItemRoutes.js
+// // routes/orderItemRoutes.js
 
-const express = require('express');
-const router = express.Router();
-const OrderItemController = require('../controllers/orderItemController');
+// const express = require('express');
+// const router = express.Router();
+// const OrderItemController = require('../controllers/orderItemController');
 
-router.get('/orderItems', OrderItemController.getOrderItems);
-// Add other order item-related routes as needed
+// router.get('/orderItems', OrderItemController.getOrderItems);
+// // Add other order item-related routes as needed
 
-module.exports = router;
+// module.exports = router;
