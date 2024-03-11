@@ -14,11 +14,11 @@ const AuthController = {
         }
   
         // Hash the password
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        // const saltRounds = 10;
+        // const hashedPassword = await bcrypt.hash(password, saltRounds);
   
         // Create a new user
-        const newUser = await db.User.create({ username, email, password: hashedPassword });
+        const newUser = await db.User.create({ username, email,password});// password: hashedPassword });
   
         // Create and sign a JWT token
         const token = jwt.sign(
