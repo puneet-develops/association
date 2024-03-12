@@ -13,6 +13,7 @@ const WishlistController = {
     }
   },
   async addToWishlist(req,res){
+    console.log(req.body)
     const{userId , productId}=req.body;
     try{
       const transaction=await sequelize.transaction();
