@@ -1,6 +1,6 @@
 // controllers/orderController.js
 
-const { Order, OrderItem, Product,sequelize } = require("../models");
+const { Order, OrderItem, Product, sequelize } = require("../models");
 
 const OrderController = {
   async getOrders(req, res) {
@@ -74,10 +74,12 @@ const OrderController = {
         });
         // Calculate the amount
         const totalAmount = orderItems.reduce((total, orderItem) => {
-          const productPrice = orderItem.orderItems ? orderItem.orderItems.price : 0;
+          const productPrice = orderItem.orderItems
+            ? orderItem.orderItems.price
+            : 0;
           return total + orderItem.quantity * productPrice;
         }, 0);
-       
+
         // Update total_amount in the Order model
         await Order.update(
           { total_amount: totalAmount },
