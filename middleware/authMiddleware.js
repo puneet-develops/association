@@ -1,11 +1,20 @@
 const jwt = require('jsonwebtoken');
+
 const verifyToken = (req, res, next) => {
   const bearerToken = req.header('Authorization');
-  const token = bearerToken.split(' ')[1];
-  if (!token) {
+
+  // Check if bearerToken is undefined or null
+  if (!bearerToken) {
     return res.status(401).json({ error: 'Unauthorized: Missing token' });
   }
-  console.log(token);
+
+  // Split the bearerToken and extract the token
+  const tokenParts = bearerToken.split(' ');
+  if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+    return res.status(401).json({ error: 'Unauthorized: Invalid token format' });
+  }
+
+  const token = tokenParts[1];
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET); 
@@ -17,4 +26,4 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-module.exports = verifyToken; 
+module.exports = verifyToken;

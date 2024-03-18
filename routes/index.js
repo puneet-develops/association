@@ -20,8 +20,8 @@ router.post('/users', verifyToken,UserController.getUsers);
 router.post('/users/:userId',verifyToken, UserController.getUserById);
 
 //product
-router.get('/products', verifyToken,ProductController.getProducts);
-router.get('/products/:productId',verifyToken, ProductController.getProductById);
+router.get('/products',ProductController.getProducts);
+router.get('/products/:productId', ProductController.getProductById);
 //wishlist
 router.post('/wishlist', verifyToken,WishlistController.getWishlist);
 
@@ -35,7 +35,7 @@ router.post('/reviews',verifyToken, ReviewController.getReviews);
 router.post('/sign-up', authController.registerUser);  
 router.post('/sign-in', authController.signInUser);
 //transaction
-router.post('/orders', verifyToken, OrderController.orders);
+router.post('/order', verifyToken, OrderController.orders);
 router.post('/addwishlist', verifyToken, WishlistController.addToWishlist);
 
 
