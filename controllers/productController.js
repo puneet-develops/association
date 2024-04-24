@@ -1,12 +1,39 @@
 //location h controllers/productController.js
 
+const { NUMBER } = require("sequelize");
 const { Product, OrderItem, Review } = require("../models");
 
 const ProductController = {
   async getProducts(req, res) {
     try {
-      const products = await Product.findAll();
+      
+    //   const pageAsnumber=Number.parseInt(req.query.page);
+    //   const sizeAsnumber=Number.parseInt(req.query.size);
+    //   let page=0;
+    //   if(!Number.isNaN(pageAsnumber)&& pageAsnumber >0){
+    //     page=pageAsnumber;
+    //   }
+    //   let size=10;
+    //   if(!Number.isNaN(sizeAsnumber)&& sizeAsnumber >0 && sizeAsnumber<10){
+    //     size=sizeAsnumber;
+    //   }
+    //   const products = await Product.findAndCountAll({
+    //     limit:size,
+    //     offset:page*size
+    //   });
+    //  // console.log(res.send(products),"hello");
+    //   res.json({
+    //     content:products.rows,
+    //     totalpages:Math.ceil(products.count/size)
+    //   });
+      const products = await Product.findAll({
+        limit: req.pagination.limit,
+        offset: req.pagination.offset,
+        where: req.pagination.filterField && req.pagination.filterValue ? { [req.pagination.filterField]: req.pagination.filterValue } : undefined,
+
+      });
       res.json(products);
+      
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
@@ -39,7 +66,41 @@ const ProductController = {
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
-  // Add other product-related controller functions as needed
+  async createProduct(productData) {
+    try {
+      const newProduct = await Product.create(productData);
+      return newProduct;
+    } catch (error) {
+      throw new Error('Failed to create product: ' + error.message);
+    }
+  },
+  async updateProduct(productId, updatedProductData) {
+    try {
+      const product = await Product.findByPk(productId);
+      if (!product) {
+        throw new Error('Product not found');
+      }
+      await product.update(updatedProductData);
+      return product;
+    } catch (error) {
+      throw new Error('Failed to update product: ' + error.message);
+    }
+  },
+  async deleteProduct(productId) {
+    try {
+      const product = await Product.findByPk(productId);
+      if (!product) {
+        throw new Error('Product not found');
+      }
+      await product.destroy();
+      return { message: 'Product deleted successfully' };
+    } catch (error) {
+      throw new Error('Failed to delete product: ' + error.message);
+    }
+  },
+    
+
+  
 };
 
 module.exports = ProductController;

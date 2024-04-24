@@ -45,6 +45,21 @@ const WishlistController = {
 
     }
   },
+  async removeFromWishlist(req, res) {
+    const wishlistId = req.params.wishlistId;
+    try {
+      const wishlistItem = await Wishlist.findByPk(wishlistId);
+      if (!wishlistItem) {
+        return res.status(404).json({ error: 'Wishlist item not found' });
+      }
+      await wishlistItem.destroy();
+      res.json({ message: 'Wishlist item removed successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+
   // Add other wishlist-related controller functions as needed
 };
 

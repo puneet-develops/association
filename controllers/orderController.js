@@ -33,7 +33,7 @@ const OrderController = {
     }
   },
   // Add other order-related controller functions as needed
-  async orders(req, res) {
+  async createorders(req, res) {
     const { userId, productsIds } = req.body;
     let transaction;
     let ordern;
@@ -98,7 +98,30 @@ const OrderController = {
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
+  async deleteOrder(req, res) {
+    const orderId = req.params.orderId;
+    try {
+      // Find the order
+      const order = await Order.findByPk(orderId);
+      if (!order) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+
+      // Delete associated order items
+      await OrderItem.destroy({ where: { order_id: orderId } });
+
+      // Delete the order
+      await Order.destroy({ where: { order_id: orderId } });
+
+      res.json({ message: "Order deleted successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
 };
+
+
 
 module.exports = OrderController;
   

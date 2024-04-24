@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(models.User, { through: 'Wishlist', foreignKey: 'product_id' });
       this.hasMany(models.OrderItem, { foreignKey: 'product_id' ,as:'orderItems'});
       this.hasMany(models.Review, { foreignKey: 'product_id',as: 'reviews' });
-      // define association here
+      
     }
   }
   Product.init({
